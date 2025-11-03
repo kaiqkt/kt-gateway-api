@@ -1,0 +1,20 @@
+---
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
+
+authentication-service-url: "http://localhost:8081/auth"
+policies-cache-ttl: 1
+
+routes:
+  resource-servers:
+    - id: "1"
+      uri: "/api/first"
+      host: "http://localhost:8081"
+    - id: "2"
+      uri: "/api/second"
+      host: "http://localhost:8081"

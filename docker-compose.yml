@@ -1,0 +1,49 @@
+---
+services:
+  redis-ig:
+    image: redis:latest
+    command: ["redis-server", "--requirepass", "pwd"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-ig:/data
+
+  postgresql-ig:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: default_user
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: external_gateway
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-ig:/var/lib/postgresql
+
+  kt-authentication-api-ig:
+    image: kaiqkt/kt-authentication-api:local
+    environment:
+      POSTGRESQL_URL: jdbc:postgresql://postgresql-ig:5432/external_gateway
+      POSTGRESQL_USERNAME: default_user
+      POSTGRESQL_PASSWORD: pwd
+      AUTHENTICATION_SESSION_TTL: 604800
+      AUTHENTICATION_ISSUER: kaiqkt
+      AUTHENTICATION_ACCESS_TOKEN_TTL: 900
+      AUTHENTICATION_ACCESS_TOKEN_SECRET: k2p4/4gX5h0x/1B9Y9O2VJ6ZcfjWQmV5UQJ4cZP9YvE=
+    ports:
+      - "8081:8080"
+
+  kt-gateway-api-ig:
+    image: kaiqkt/kt-gateway-api:local
+    environment:
+      REDIS_HOST: redis-ig
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: "pwd"
+      KT_AUTHENTICATION_API_ID: 01K94R96STA0H1677RDZ73QBT9
+      KT_AUTHENTICATION_API_URI: /api/auth
+      KT_AUTHENTICATION_API_URL: http://kt-authentication-api-ig:8080
+    ports:
+      - "8080:8080"
+
+volumes:
+  redis-ig:
+  postgres-ig:

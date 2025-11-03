@@ -1,0 +1,26 @@
+---
+server:
+  port: 8080
+
+spring:
+  application:
+    name: kt-gateway-api
+  web:
+    locale: en_US
+    locale-resolver: fixed
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  cache:
+    type: redis
+
+authentication-service-url: ${KT_AUTHENTICATION_API_URL}
+policies-cache-ttl: 1
+
+routes:
+  resource-servers:
+    - id: ${KT_AUTHENTICATION_API_ID}
+      uri: ${KT_AUTHENTICATION_API_URI}
+      host: ${KT_AUTHENTICATION_API_URL}
