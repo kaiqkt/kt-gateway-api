@@ -10,11 +10,12 @@ spring:
 authentication-service-url: "http://localhost:8081/auth"
 policies-cache-ttl: 1
 
-routes:
+gateway:
+  client-id: "11234"
   resource-servers:
-    - id: "1"
+    - name: "first"
       uri: "/api/first"
       host: "http://localhost:8081"
-    - id: "2"
+    - name: "second"
       uri: "/api/second"
       host: "http://localhost:8081"

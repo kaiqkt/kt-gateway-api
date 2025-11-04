@@ -15,9 +15,10 @@ class AuthenticationService(
         return authenticationClient.introspect(accessToken)
     }
 
-    @Cacheable(value = ["policies"], key = "#method.concat(#resourceServerId)", unless = "#result == null")
-    fun findPolicy(method: String, uri: String, resourceServerId: String): Policy? {
-        val policies = authenticationClient.findAllPolicies(resourceServerId)
+    @Cacheable(value = ["policies"], key = "#method.concat(#clientId)", unless = "#result == null")
+    fun findPolicy(method: String, uri: String, clientId: String): Policy? {
+        val client = authenticationClient.findClientById(clientId) ?: return null
+        val policies = client.policies
 
         if (policies.isEmpty()) {
             return null

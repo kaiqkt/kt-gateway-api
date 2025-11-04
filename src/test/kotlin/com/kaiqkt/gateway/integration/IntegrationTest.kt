@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.cache.CacheManager
@@ -25,6 +26,9 @@ import org.testcontainers.junit.jupiter.Testcontainers
 class IntegrationTest {
     @LocalServerPort
     private var port: Int = 0
+
+    @Value(value = $$"${gateway.client-id}")
+    lateinit var clientId: String
 
     @Autowired
     private lateinit var mapper: ObjectMapper

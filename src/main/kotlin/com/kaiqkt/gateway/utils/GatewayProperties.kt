@@ -4,8 +4,8 @@ import com.kaiqkt.gateway.models.ResourceServer
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 
-@Configuration
-@ConfigurationProperties(prefix = "routes")
-data class ResourceServersProperties(
+@ConfigurationProperties(prefix = "gateway")
+data class GatewayProperties(
+    val clientId: String,
     val resourceServers: List<ResourceServer>
 )

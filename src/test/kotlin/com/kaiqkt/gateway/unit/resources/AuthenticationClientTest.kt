@@ -22,36 +22,37 @@ class AuthenticationClientTest {
     }
 
     @Test
-    fun `given a resource server id should return all policies successfully`() {
-        AuthenticationHelper.mockSuccessfullyFoundPolicies("resource-server-id")
+    fun `given a client id should return successfully`() {
+        AuthenticationHelper.mockSuccessfullyFoundClient("client-id")
 
-        val policies = authenticationClient.findAllPolicies("resource-server-id")
+        val client = authenticationClient.findClientById("client-id")
 
-        assertTrue(policies.isNotEmpty())
+        assertNotNull(client)
+        assertTrue(client.policies.isNotEmpty())
 
-        AuthenticationHelper.verifyPoliciesRequest("resource-server-id")
+        AuthenticationHelper.verifyClientsRequest("client-id")
     }
 
     @Test
-    fun `given a resource server id when not found any policy should return empty list`() {
-        AuthenticationHelper.mockNotFoundPolicies("resource-server-id")
+    fun `given a client id when not found should return null`() {
+        AuthenticationHelper.mockNotFoundClient("client-id")
 
-        val policies = authenticationClient.findAllPolicies("resource-server-id")
+        val client = authenticationClient.findClientById("client-id")
 
-        assertTrue(policies.isEmpty())
+        assertNull(client)
 
-        AuthenticationHelper.verifyPoliciesRequest("resource-server-id")
+        AuthenticationHelper.verifyClientsRequest("client-id")
     }
 
     @Test
-    fun `given a resource server id when response is invalid should return empty list`() {
-        AuthenticationHelper.mockInvalidPoliciesResponse("resource-server-id")
+    fun `given a client id when response is invalid should return empty list`() {
+        AuthenticationHelper.mockInvalidClientResponse("client-id")
 
-        val policies = authenticationClient.findAllPolicies("resource-server-id")
+        val client = authenticationClient.findClientById("client-id")
 
-        assertTrue(policies.isEmpty())
+        assertNull(client)
 
-        AuthenticationHelper.verifyPoliciesRequest("resource-server-id")
+        AuthenticationHelper.verifyClientsRequest("client-id")
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.kaiqkt.gateway.integration.gateway
 
 import com.kaiqkt.gateway.integration.IntegrationTest
+import com.kaiqkt.gateway.unit.models.ClientSampler
 import com.kaiqkt.gateway.unit.models.IntrospectSampler
 import com.kaiqkt.gateway.unit.models.PolicySampler
 import com.kaiqkt.gateway.unit.resources.helpers.AuthenticationHelper
@@ -13,9 +14,9 @@ class GatewayIntegrationTest : IntegrationTest() {
     @Test
     fun `given a request when does not have policies in cache should call auth service to get them`() {
         AuthenticationHelper.mockSuccessDownstream()
-        AuthenticationHelper.mockSuccessfullyFoundPolicies(
-            resourceServerId = "1",
-            policy = PolicySampler.sample(isPublic = true, uri = "/auth/v1/users")
+        AuthenticationHelper.mockSuccessfullyFoundClient(
+            clientId = clientId,
+            client = ClientSampler.sample(PolicySampler.sample(isPublic = true, uri = "/auth/v1/users"))
         )
 
         RestAssured.given()
@@ -29,14 +30,14 @@ class GatewayIntegrationTest : IntegrationTest() {
             .statusCode(200)
 
         AuthenticationHelper.verifyDownstreamRequest(times = 2)
-        AuthenticationHelper.verifyPoliciesRequest("1")
+        AuthenticationHelper.verifyClientsRequest(clientId)
     }
 
     @Test
     fun `given a request to resource server should continue with downstream`() {
-        AuthenticationHelper.mockSuccessfullyFoundPolicies(
-            resourceServerId = "2",
-            policy = PolicySampler.sample(isPublic = true, uri = "/auth/v1/users")
+        AuthenticationHelper.mockSuccessfullyFoundClient(
+            clientId = clientId,
+            client = ClientSampler.sample(PolicySampler.sample(isPublic = true, uri = "/auth/v1/users"))
         )
         AuthenticationHelper.mockSuccessDownstream()
 
@@ -46,14 +47,14 @@ class GatewayIntegrationTest : IntegrationTest() {
             .statusCode(200)
 
         AuthenticationHelper.verifyDownstreamRequest(times = 1)
-        AuthenticationHelper.verifyPoliciesRequest("2")
+        AuthenticationHelper.verifyClientsRequest(clientId)
     }
 
     @Test
     fun `given a request when user has correct permissions should continue with downstream`() {
-        AuthenticationHelper.mockSuccessfullyFoundPolicies(
-            resourceServerId = "1",
-            policy = PolicySampler.sample(uri = "/auth/v1/users", roles = listOf("USER"))
+        AuthenticationHelper.mockSuccessfullyFoundClient(
+            clientId = clientId,
+            client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users", roles = listOf("USER")))
         )
         AuthenticationHelper.mockSuccessfullyIntrospect(
             "access-token",
@@ -69,8 +70,7 @@ class GatewayIntegrationTest : IntegrationTest() {
 
         AuthenticationHelper.verifyDownstreamRequest(times = 1)
         AuthenticationHelper.verifyIntrospectRequest()
-        AuthenticationHelper.verifyPoliciesRequest("1")
-
+        AuthenticationHelper.verifyClientsRequest(clientId)
     }
 
     @Test
@@ -80,12 +80,12 @@ class GatewayIntegrationTest : IntegrationTest() {
             .then()
             .statusCode(401)
 
-        AuthenticationHelper.verifyPoliciesRequest("1")
+        AuthenticationHelper.verifyClientsRequest(clientId)
     }
 
     @Test
     fun `given a request when access token is invalid should return http status 401`() {
-        AuthenticationHelper.mockSuccessfullyFoundPolicies(resourceServerId = "1", policy = PolicySampler.sample())
+        AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample())
 
         RestAssured.given()
             .get("/api/first/auth/v1/users")
@@ -94,12 +94,12 @@ class GatewayIntegrationTest : IntegrationTest() {
             .extract()
             .headers()
 
-        AuthenticationHelper.verifyPoliciesRequest("1")
+        AuthenticationHelper.verifyClientsRequest(clientId)
     }
 
     @Test
     fun `given a request when session not found for introspection should return http status 401`() {
-        AuthenticationHelper.mockSuccessfullyFoundPolicies(resourceServerId = "1", policy = PolicySampler.sample(uri = "/auth/v1/users"))
+        AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")))
 
         RestAssured.given()
             .header(HttpHeaders.AUTHORIZATION, "access-token")
@@ -107,13 +107,13 @@ class GatewayIntegrationTest : IntegrationTest() {
             .then()
             .statusCode(401)
 
-        AuthenticationHelper.verifyPoliciesRequest("1")
+        AuthenticationHelper.verifyClientsRequest(clientId)
         AuthenticationHelper.verifyIntrospectRequest()
     }
 
     @Test
     fun `given a request when session is inactivated should return http status 401`() {
-        AuthenticationHelper.mockSuccessfullyFoundPolicies(resourceServerId = "1", policy = PolicySampler.sample(uri = "/auth/v1/users"))
+        AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")))
         AuthenticationHelper.mockSuccessfullyIntrospect("access-token", IntrospectSampler.sample())
 
         RestAssured.given()
@@ -122,13 +122,13 @@ class GatewayIntegrationTest : IntegrationTest() {
             .then()
             .statusCode(401)
 
-        AuthenticationHelper.verifyPoliciesRequest("1")
+        AuthenticationHelper.verifyClientsRequest(clientId)
         AuthenticationHelper.verifyIntrospectRequest()
     }
 
     @Test
     fun `given a request when user does not have the necessary authorities should return http status 401`() {
-        AuthenticationHelper.mockSuccessfullyFoundPolicies(resourceServerId = "1", policy = PolicySampler.sample(uri = "/auth/v1/users"))
+        AuthenticationHelper.mockSuccessfullyFoundClient(clientId = clientId, client = ClientSampler.sample(PolicySampler.sample(uri = "/auth/v1/users")))
         AuthenticationHelper.mockSuccessfullyIntrospect("access-token", IntrospectSampler.sample(true))
 
         RestAssured.given()
@@ -138,6 +138,6 @@ class GatewayIntegrationTest : IntegrationTest() {
             .statusCode(403)
 
         AuthenticationHelper.verifyIntrospectRequest()
-        AuthenticationHelper.verifyPoliciesRequest("1")
+        AuthenticationHelper.verifyClientsRequest(clientId)
     }
 }

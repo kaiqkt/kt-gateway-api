@@ -17,6 +17,7 @@ import org.springframework.web.servlet.function.ServerResponse
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class SecurityFilterTest {
     private val authenticationService = mockk<AuthenticationService>()
@@ -162,7 +163,7 @@ class SecurityFilterTest {
         verify { nextHandler.handle(modifiedRequest.captured) }
 
         assertEquals(introspect.sub, modifiedRequest.captured.headers().firstHeader("X-User-Id"))
-        assertEquals(introspect.sid, modifiedRequest.captured.headers().firstHeader("X-Session-Id"))
+        assertNotNull(modifiedRequest.captured.headers().firstHeader("X-Request-Id"))
     }
 
 
@@ -189,6 +190,6 @@ class SecurityFilterTest {
         verify { nextHandler.handle(modifiedRequest.captured) }
 
         assertEquals(introspect.sub, modifiedRequest.captured.headers().firstHeader("X-User-Id"))
-        assertEquals(introspect.sid, modifiedRequest.captured.headers().firstHeader("X-Session-Id"))
+        assertNotNull(modifiedRequest.captured.headers().firstHeader("X-Request-Id"))
     }
 }

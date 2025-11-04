@@ -1,1 +1,1 @@
-rootProject.name = "kt-external-gateway-api"
+rootProject.name = "kt-gateway-api"
