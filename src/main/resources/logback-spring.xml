@@ -16,9 +16,7 @@
                     <pattern>
                         {
                             "app_name":"${APP_NAME}",
-                            "request_id":"%X{request_id}",
-                            "user_id":"%X{user_id}",
-                            "session_id":"%X{session}"
+                            "request_id":"%X{request_id}"
                         }
                     </pattern>
                 </pattern>

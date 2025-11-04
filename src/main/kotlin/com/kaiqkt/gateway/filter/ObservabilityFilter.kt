@@ -32,8 +32,6 @@ class ObservabilityFilter {
 
             log.info("Downstream request responded with status code ${response.statusCode()}")
 
-            MDC.clear()
-
             response
         }
     }
