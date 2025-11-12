@@ -33,7 +33,7 @@ services:
       - "8081:8080"
 
   kt-gateway-api-g:
-    image: kaiqkt/kt-gateway-api:local
+    image: ghcr.io/kaiqkt/kt-gateway-api:latest
     environment:
       REDIS_HOST: redis-g
       REDIS_PORT: 6379
