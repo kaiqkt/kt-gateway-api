@@ -16,6 +16,15 @@ spring:
   cache:
     type: redis
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  metrics:
+    tags:
+      application: kt-gateway-api
+
 authentication-service-url: ${KT_AUTHENTICATION_API_URL}
 policies-cache-ttl: 1
 

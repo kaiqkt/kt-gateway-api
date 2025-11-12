@@ -35,7 +35,10 @@ class SecurityFilterTest {
         val nextHandler = mockk<HandlerFunction<ServerResponse>> {}
         every { authenticationService.findPolicy(any(), any(), any()) } returns null
 
-        val response = securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        val response =
+            securityFilter
+                .authentication("resource_server_id", "resource_server_name")
+                .filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
 
@@ -55,7 +58,7 @@ class SecurityFilterTest {
         every { authenticationService.findPolicy(any(), any(), any()) } returns policy
         every { nextHandler.handle(capture(modifiedRequest)) } returns ServerResponse.ok().build()
 
-        securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        securityFilter.authentication("resource_server_id", "resource_server_name").filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
         verify { nextHandler.handle(modifiedRequest.captured) }
@@ -72,7 +75,7 @@ class SecurityFilterTest {
         every { authenticationService.findPolicy(any(), any(), any()) } returns policy
         every { nextHandler.handle(any()) } returns ServerResponse.ok().build()
 
-        val response = securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        val response = securityFilter.authentication("resource_server_id", "resource_server_name").filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
 
@@ -92,7 +95,7 @@ class SecurityFilterTest {
         every { authenticationService.findPolicy(any(), any(), any()) } returns policy
         every { authenticationService.introspect(any()) } returns null
 
-        val response = securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        val response = securityFilter.authentication("resource_server_id", "resource_server_name").filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
         verify { authenticationService.introspect(any()) }
@@ -115,7 +118,7 @@ class SecurityFilterTest {
         every { authenticationService.findPolicy(any(), any(), any()) } returns policy
         every { authenticationService.introspect(any()) } returns introspect
 
-        val response = securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        val response = securityFilter.authentication("resource_server_id", "resource_server_name").filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
         verify { authenticationService.introspect(any()) }
@@ -137,7 +140,7 @@ class SecurityFilterTest {
         every { authenticationService.findPolicy(any(), any(), any()) } returns policy
         every { authenticationService.introspect(any()) } returns introspect
 
-        val response = securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        val response = securityFilter.authentication("resource_server_id", "resource_server_name").filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
         verify { authenticationService.introspect(any()) }
@@ -147,7 +150,8 @@ class SecurityFilterTest {
 
     @Test
     fun `given a request for a resource server when is not public and user has the necessary roles should continue the request`() {
-        val policy = PolicySampler.sample(permissions = listOf("itinerary.view", "user.write"), roles = listOf("USER", "ADMIN"))
+        val policy =
+            PolicySampler.sample(permissions = listOf("itinerary.view", "user.write"), roles = listOf("USER", "ADMIN"))
         val introspect = IntrospectSampler.sample(active = true, roles = listOf("USER"))
 
         val request =
@@ -162,7 +166,7 @@ class SecurityFilterTest {
         every { authenticationService.introspect(any()) } returns introspect
         every { nextHandler.handle(capture(modifiedRequest)) } returns ServerResponse.ok().build()
 
-        securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        securityFilter.authentication("resource_server_id", "resource_server_name").filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
         verify { authenticationService.introspect(any()) }
@@ -174,7 +178,8 @@ class SecurityFilterTest {
 
     @Test
     fun `given a request for a resource server when is not public and user has the necessary permissions should continue the request`() {
-        val policy = PolicySampler.sample(permissions = listOf("itinerary.view", "user.write"), roles = listOf("USER", "ADMIN"))
+        val policy =
+            PolicySampler.sample(permissions = listOf("itinerary.view", "user.write"), roles = listOf("USER", "ADMIN"))
         val introspect = IntrospectSampler.sample(active = true, permissions = listOf("itinerary.view"))
 
         val request =
@@ -189,7 +194,7 @@ class SecurityFilterTest {
         every { authenticationService.introspect(any()) } returns introspect
         every { nextHandler.handle(capture(modifiedRequest)) } returns ServerResponse.ok().build()
 
-        securityFilter.authentication("resource_server_id").filter(request, nextHandler)
+        securityFilter.authentication("resource_server_id", "resource_server_name").filter(request, nextHandler)
 
         verify { authenticationService.findPolicy(any(), any(), any()) }
         verify { authenticationService.introspect(any()) }

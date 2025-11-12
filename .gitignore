@@ -12,6 +12,9 @@ hs_err_pid*
 *.ctxt
 .mtj.tmp/
 
+### Kotlin ###
+.kotlin
+
 # Package files
 *.jar
 *.war

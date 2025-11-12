@@ -36,6 +36,6 @@ class GatewayConfig(
             .route(path("${resourceServer.uri}/**"), http())
             .before(uri(resourceServer.host))
             .before(rewritePath("${resourceServer.uri}/(?<segment>.*)", $$"/${segment}"))
-            .filter(securityFilter.authentication(clientId))
+            .filter(securityFilter.authentication(clientId, resourceServer.host))
             .build()
 }
