@@ -8,32 +8,8 @@ services:
     volumes:
       - redis-ig:/data
 
-  postgresql-g:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: default_user
-      POSTGRES_PASSWORD: pwd
-      POSTGRES_DB: gateway-db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-ig:/var/lib/postgresql
-
-  kt-authentication-api-g:
-    image: ghcr.io/kaiqkt/kt-authentication-api:latest
-    environment:
-      POSTGRESQL_URL: jdbc:postgresql://postgresql-g:5432/gateway-db
-      POSTGRESQL_USERNAME: default_user
-      POSTGRESQL_PASSWORD: pwd
-      AUTHENTICATION_SESSION_TTL: 604800
-      AUTHENTICATION_ISSUER: kaiqkt
-      AUTHENTICATION_ACCESS_TOKEN_TTL: 900
-      AUTHENTICATION_ACCESS_TOKEN_SECRET: k2p4/4gX5h0x/1B9Y9O2VJ6ZcfjWQmV5UQJ4cZP9YvE=
-    ports:
-      - "8081:8080"
-
   kt-gateway-api-g:
-    image: ghcr.io/kaiqkt/kt-gateway-api:latest
+    image: kaiqkt/kt-gateway-api:local
     environment:
       REDIS_HOST: redis-g
       REDIS_PORT: 6379

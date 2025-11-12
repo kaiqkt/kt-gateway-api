@@ -1,11 +1,14 @@
 package com.kaiqkt.gateway.utils
 
+import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import java.util.concurrent.TimeUnit
 
 object MetricsUtils {
-    private val meterRegistry = SimpleMeterRegistry()
+    lateinit var meterRegistry: MeterRegistry
+    fun init(registry: MeterRegistry) {
+        meterRegistry = registry
+    }
 
     fun counter(
         name: String,

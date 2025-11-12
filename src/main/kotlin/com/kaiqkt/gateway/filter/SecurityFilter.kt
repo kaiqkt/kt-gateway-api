@@ -41,6 +41,7 @@ class SecurityFilter(
                     Constants.Metrics.STATUS,
                     "policy_not_found",
                 )
+                log.info("Oi")
                 return@HandlerFilterFunction ServerResponse.status(HttpStatus.UNAUTHORIZED).build()
             }
 
