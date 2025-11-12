@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit
 
 object MetricsUtils {
     lateinit var meterRegistry: MeterRegistry
+
     fun init(registry: MeterRegistry) {
         meterRegistry = registry
     }
