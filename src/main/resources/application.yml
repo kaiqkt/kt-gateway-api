@@ -31,6 +31,6 @@ policies-cache-ttl: 1
 gateway:
   client-id: ${KT_GATEWAY_ID}
   resource-servers:
-    - name: ${KT_AUTHENTICATION_API_NAME} # Substituir por nome do resource server
+    - name: ${KT_AUTHENTICATION_API_NAME}
       uri: ${KT_AUTHENTICATION_API_URI}
       host: ${KT_AUTHENTICATION_API_URL}
